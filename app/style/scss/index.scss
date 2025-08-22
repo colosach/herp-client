@@ -1,0 +1,15 @@
+@use "base" as *;
+@use "theme" as *;
+@use "utils" as *;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--ui-bg-elevated);
+  font-family: var(--erp-font-family);
+
+  /* @include outline; */
+}
+

@@ -1,0 +1,1 @@
+export const DEFAULT_PRIMARY_COLOR: string = "#00D5BE";

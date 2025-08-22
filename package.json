@@ -1,0 +1,45 @@
+{
+  "name": "nuxt-app",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/content": "^3.6.3",
+    "@nuxt/scripts": "^0.11.10",
+    "@nuxt/ui": "^3.3.2",
+    "@nuxtjs/i18n": "^10.0.6",
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@pinia/nuxt": "^0.11.2",
+    "@tailwindcss/postcss": "^4.0.0-alpha.13",
+    "@tailwindcss/vite": "^4.1.12",
+    "@unhead/vue": "^2.0.14",
+    "@vueuse/components": "^13.7.0",
+    "@vueuse/core": "^13.7.0",
+    "@vueuse/integrations": "^13.7.0",
+    "@vueuse/nuxt": "^13.7.0",
+    "axios": "^1.11.0",
+    "crypto-js": "^4.2.0",
+    "glob": "^11.0.3",
+    "jwt-decode": "^4.0.0",
+    "nuxt": "^4.0.3",
+    "petite-vue-i18n": "^11.1.11",
+    "pinia": "^3.0.3",
+    "postcss": "^8.5.6",
+    "typescript": "^5.9.2",
+    "vue": "^3.5.18",
+    "vue-router": "^4.5.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@iconify-json/ph": "^1.2.2",
+    "@types/crypto-js": "^4.2.2",
+    "@types/glob": "^9.0.0",
+    "sass": "^1.90.0"
+  }
+}

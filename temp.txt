@@ -1,0 +1,148 @@
+  const authStore = useAuthStore()
+
+  const savedEncrytedJwtAccessToken = 
+    useLocalStorage<string | null>(ERP_JWT_ACCESS_TOKEN_STORAGE_KEY, null)
+
+  function initLogin() {
+    authStore.loginUser({
+      username: "admin",
+      password: "password"
+    })
+  }
+
+  function clearStorage() {
+    savedEncrytedJwtAccessToken.value = null
+  }
+
+  const user = computed(() => {
+    return authStore.user 
+  })
+
+------------------------------------------------------
+
+  User: {{ user }}
+
+    <br />
+
+  <button
+    class="p-2 rounded-lg bg-white text-black cursor-pointer"
+    @click="initLogin"
+  >
+    Login
+  </button>
+
+  <button
+    class="p-2 rounded-lg bg-white text-black cursor-pointer"
+    @click="clearStorage"
+  >
+    Reset
+  </button>
+
+-------------------------------------------------------
+
+  --ui-text-dimmed: var(--ui-color-neutral-400);
+    --ui-text-muted: var(--ui-color-neutral-500);
+    --ui-text-toned: var(--ui-color-neutral-600);
+    --ui-text: var(--ui-color-neutral-700);
+    --ui-text-highlighted: var(--ui-color-neutral-900);
+    --ui-text-inverted: var(--color-white);
+    --ui-bg: var(--color-white);
+    --ui-bg-muted: var(--ui-color-neutral-50);
+    --ui-bg-elevated: var(--ui-color-neutral-100);
+    --ui-bg-accented: var(--ui-color-neutral-200);
+    --ui-bg-inverted: var(--ui-color-neutral-900);
+    --ui-border: var(--ui-color-neutral-200);
+    --ui-border-muted: var(--ui-color-neutral-200);
+    --ui-border-accented: var(--ui-color-neutral-300);
+    --ui-border-inverted: var(--ui-color-neutral-900);
+    --ui-radius: 0.25rem;
+    --ui-container: var(--container-7xl);
+  
+------------------------------------------------------
+
+  // Dark mode variables
+  [data-theme="dark"] {
+    --primary-50: #082f49;
+    --primary-100: #0c4a6e;
+    --primary-200: #075985;
+    --primary-300: #0369a1;
+    --primary-400: #0284c7;
+    --primary-500: #0ea5e9;
+    --primary-600: #38bdf8;
+    --primary-700: #7dd3fc;
+    --primary-800: #bae6fd;
+    --primary-900: #e0f2fe;
+    --primary-950: #f0f9ff;
+
+    --secondary-50: #020617;
+    --secondary-100: #0f172a;
+    --secondary-200: #1e293b;
+    --secondary-300: #334155;
+    --secondary-400: #475569;
+    --secondary-500: #64748b;
+    --secondary-600: #94a3b8;
+    --secondary-700: #cbd5e1;
+    --secondary-800: #e2e8f0;
+    --secondary-900: #f1f5f9;
+    --secondary-950: #f8fafc;
+
+    --neutral-50: #0a0a0a;
+    --neutral-100: #171717;
+    --neutral-200: #262626;
+    --neutral-300: #404040;
+    --neutral-400: #525252;
+    --neutral-500: #737373;
+    --neutral-600: #a3a3a3;
+    --neutral-700: #d4d4d4;
+    --neutral-800: #e5e5e5;
+    --neutral-900: #f5f5f5;
+    --neutral-950: #fafafa;
+  }
+
+----------------------------------------------------
+
+  /**
+ * NOTE:
+ * this file sets up i18n for the app using lazy loading
+ * https://vue-i18n.intlify.dev/guide/advanced/lazy.html
+ */
+
+
+import { createI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
+const { persistedLocale } = useERPLocale()
+
+const i18n = createI18n({
+  locale: persistedLocale.value,
+  fallbackLocale: import.meta.env.VITE_ERP_DEFAULT_LOCALE,
+  legacy: false,
+})
+
+export function setI18nLanguage(locale: string) {
+
+  i18n.global.locale.value = locale
+  document.querySelector('html')?.setAttribute('lang', locale)
+}
+
+// export function setupI18n(options: any) {
+
+//   const i18n = createI18n(options)
+//   setI18nLanguage(i18n, options.locale)
+//   return i18n
+// }
+
+export async function loadLocaleMessages() {
+  
+  // load locale messages with dynamic import
+  const messages = await import(
+    /* webpackChunkName: "locale-[request]" */ `./locales/${persistedLocale.value}.json`
+  )
+  console.log("🚧 ~ loadLocaleMessages ~ messages::::", messages)
+
+  // // set locale and locale message
+  // i18n.global.setLocaleMessage(locale, messages.default, )
+
+  return nextTick()
+}
+
+export default i18n

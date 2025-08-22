@@ -1,0 +1,41 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --breakpoint-sml: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-plg: 992px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-pxl: 1200px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-p2xl: 1440px;
+  --breakpoint-2xl: 1536px;
+  --breakpoint-3xl: 1600px;
+}
+
+ /* CSS Variables from Figma Design System - ERP */
+:root {
+  --erp-font-family: "Public Sans";
+  --erp-secondary-color: #64748b;
+
+  --ui-color-white: #ffffff;
+  --ui-color-black: #000000;
+
+
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+
+  /* Z-Index */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
