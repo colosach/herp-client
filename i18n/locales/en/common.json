@@ -1,6 +1,39 @@
 {
-  "loading": "Loading...",
-  "save": "Save",
-  "cancel": "Cancel",
-  "error": "An error occurred"
+  "COMMON": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "internet": {
+      "online": {
+        "title": "Internet Connection Restored",
+        "description": "You're back online"
+      },
+      "offline": {
+        "title": "No Internet Connection",
+        "description": "You're offline"
+      }
+    },
+
+    "errors": {
+      "noInternetConnection": {
+        "title": "No Internet Connection",
+        "description": "Please check your network and try again."
+      },
+
+      "server": {
+        "title": "Server Error",
+        "description": "An unexpected server error occurred. Please try again later."
+      },
+
+      "notFound": {
+        "title": "Resource Not Found",
+        "description": "The requested resource could not be found."
+      },
+      
+      "unauthorized": {
+        "title": "Access Denied",
+        "description": "You are not authorized to perform this action."
+      }
+    }
+  }
 }

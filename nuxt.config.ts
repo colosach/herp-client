@@ -1,12 +1,8 @@
 import tailwindcss from "@tailwindcss/vite";
 import { createResolver } from '@nuxt/kit'
-const { resolve } = createResolver(import.meta.url)
-
-import { readdirSync, existsSync } from 'fs'
-import { join } from 'path'
-import { glob } from 'glob'
-import type { NuxtPage } from '@nuxt/schema'
 import pagesEntension from "./app/modules/pages-entension";
+
+const { resolve } = createResolver(import.meta.url)
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -25,26 +21,78 @@ export default defineNuxtConfig({
         neutral: "zinc"
       },
 
-      icons:{
+      toast: {
+        slots: {
+          root: "rounded-3xl p-6",
+          icon: "ph-bold size-10",
+          title: "text-sm font-semibold text-highlighted",
+          description: "slots__bv capitalize-first-char",
+          close: "cursor-pointer",
+        },
 
+        variants: {
+          title: {
+            true: {
+              description: 'mt-0'
+            }
+          }
+        }
+      },
+
+      button: {
+        variants: {
+          size: {
+            xl: {
+              base: "px-4 py-3 font-normal rounded-lg"
+            }
+          }
+        }
       },
 
       card: {
         slots: {
-          root: 'rounded-3xl p-4 divide-none',
-          header: 'sm:p-0',
-          body: 'sm:p-0',
-          footer: 'sm:p-0',
-        }
-      }
-    }
-  },
+          root: "rounded-3xl p-4 divide-none p-0 border-[0.0625rem] border-[var(--ui-border)] shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]",
+          header: "sm:p-0",
+          body: "sm:p-0",
+          footer: "sm:p-0",
+        },
 
-  runtimeConfig: {
-    public: {
-      // https://nuxt.com/docs/4.x/guide/going-further/runtime-config
-      erpCryptoKey: ''
-    }
+        variants: {
+          variant: {
+            outline: {
+              root: 'divide-none'
+            }
+          }
+        }
+      },
+
+      icons: {
+        arrowLeft: 'ph-arrow-left',
+        arrowRight: 'ph-arrow-right',
+        check: 'ph-check',
+        chevronDoubleLeft: 'ph-double-caret-left',
+        chevronDoubleRight: 'ph-double-caret-right',
+        chevronDown: 'ph-caret-down',
+        chevronLeft: 'ph-caret-left',
+        chevronRight: 'ph-caret-right',
+        chevronUp: 'ph-caret-up',
+        close: 'ph-x',
+        ellipsis: 'ph-ellipsis',
+        external: 'ph-arrow-up-right',
+        file: 'ph-file',
+        folder: 'ph-folder',
+        folderOpen: 'ph-folder-open',
+        loading: 'ph-loader-circle',
+        minus: 'ph-minus',
+        plus: 'ph-plus',
+        search: 'ph-search',
+        upload: 'ph-upload'
+      }
+    },
+
+    toaster: {
+      expand: false,
+    },
   },
 
   css: [
@@ -64,9 +112,21 @@ export default defineNuxtConfig({
     browserDevtoolsTiming: process.env.NODE_ENV === "development"
   },
 
+  // https://nuxt.com/modules/icon
   icon: {
-    serverBundle: {
-      collections: ["ph"] 
+    mode: "css",
+    provider: 'none',
+    externalizeIconsJson: true,
+    clientBundle: {
+      scan: {
+        // note that when you specify those values, the default behavior will be overridden
+        globInclude: [
+          'nuxt.config.ts',
+          'app/**/*.{ts,vue,json}',
+        ],
+
+        globExclude: ['node_modules', 'dist', /* ... */],
+      },
     }
   },
 
@@ -87,38 +147,11 @@ export default defineNuxtConfig({
       "composables/global/**",
       "utils/global/**",
       "constants/**",
-      "axios/**",
       "api/**",
       "types/**",
     ],
     
     imports: [
-      {
-        from: "axios",
-        name: "AxiosInstance",
-        type: true,
-      },
-      {
-        from: "axios",
-        name: "AxiosResponse",
-        type: true,
-      },
-      {
-        from: "axios",
-        name: "AxiosError",
-        type: true,
-      },
-      {
-        from: "axios",
-        name: "AxiosRequestConfig",
-        type: true,
-      },
-      {
-        from: "axios",
-        name: "InternalAxiosRequestConfig",
-        type: true,
-      },
-
       {
         from: "@vueuse/integrations/useJwt",
         name: "useJwt",
@@ -140,7 +173,7 @@ export default defineNuxtConfig({
   },
 
   ui: {
-    colorMode: false,
+    colorMode: true,
     fonts: false
   },
 

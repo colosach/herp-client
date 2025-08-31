@@ -3,6 +3,7 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+
 @theme {
   --breakpoint-sml: 480px;
   --breakpoint-sm: 640px;
@@ -38,4 +39,17 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+}
+
+
+* {
+  transition: .2s !important;
+}
+
+body {
+  transition: .2s !important;
+
+  * {
+    transition: .2s !important;
+  }
 }

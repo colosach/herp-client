@@ -1,6 +1,7 @@
 <script setup lang="ts">
   definePageMeta({
-    layout: 'erp-auth-layout'
+    layout: 'erp-auth-layout',
+    requiresGuest: true 
   })
 </script>
 

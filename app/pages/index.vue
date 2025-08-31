@@ -1,6 +1,9 @@
 
 <script setup lang="ts">
-
+  definePageMeta({
+    layout: "erp-dash-layout",
+    requiresAuth: true
+  })
 </script>
 
 <template>

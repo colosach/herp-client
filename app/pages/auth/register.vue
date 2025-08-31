@@ -1,6 +1,7 @@
 <script setup lang="ts">
   definePageMeta({
-    layout: 'erp-auth-layout'
+    layout: 'erp-auth-layout',
+    requiresGuest: true
   })
 </script>
 
@@ -11,6 +12,6 @@
       flex items-center justify-center
     "
   >
-    
+    <RegistrationForm />
   </main>
 </template>

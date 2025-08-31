@@ -1,13 +1,25 @@
 export const authService = {
-  login: async (payload: LoginCredentials): Promise<AxiosResponse> => {
-    return await axiosApiClient.post('/auth/login', payload)
+  register: async (credentials: Object) => {
+    return await apiWrapper(() => 
+      apiRequest('/auth/register', { method: 'POST', body: credentials })
+    )
+  },
+  
+  login: async (credentials: Object) => {
+    return await apiWrapper(() => 
+      apiRequest('/auth/login', { method: 'POST', body: credentials })
+    )
   },
 
-  refeshToken: async (payload: jwtToken): Promise<AxiosResponse> => {
-    return await axiosApiClient.post('/auth/refresh-token', { token: payload })
+  refreshToken: async (credentials: Object) => {
+    return await apiWrapper(() => 
+      apiRequest('/auth/refresh-token', { method: 'POST' })
+    )
   },
 
-  logout: async (payload: jwtToken): Promise<AxiosResponse> => {
-    return await axiosApiClient.post('/auth/logout', { token: payload })
+ logout: async () => {
+    return await apiWrapper(() => 
+      apiRequest('/auth/logout', { method: 'POST' })
+    )
   },
 }

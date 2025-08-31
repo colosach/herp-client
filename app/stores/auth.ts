@@ -1,3 +1,9 @@
+import * as z from 'zod'
+import type { 
+  FetchResponse 
+} from 'ofetch'
+
+
 export const useAuthStore = defineStore('auth', () => {
   const { encryptData, decryptData } = useCrypto()
   
@@ -6,8 +12,16 @@ export const useAuthStore = defineStore('auth', () => {
     useLocalStorage<string | null>(ERP_STORAGE_KEYS.JWT_ACCESS_TOKEN, null)
 
   // Decoded JWT payload (user info) from decrypted token
-  const { payload: tknPayload } = 
+  // Add type JwtAccessTokenDecoded to tknPayload
+  const { payload: tknPayload } = useJwt<JwtAccessTokenDecoded>(computed(() => decryptData(savedEncrytedJwtAccessToken.value)))
     useJwt<User>(computed(() => decryptData(savedEncrytedJwtAccessToken.value)))
+
+  const accessTokenHasExpired = () => {
+    if (!tknPayload.value || !tknPayload.value.exp) return true
+    
+    const now = Math.floor(Date.now() / 1000)
+    return tknPayload.value.exp < now
+  }
 
   // Computed user object from JWT payload, or null if not available
   const user = computed<User | null>(() => {
@@ -18,36 +32,44 @@ export const useAuthStore = defineStore('auth', () => {
       email: tknPayload.value.email,
       role: tknPayload.value.role,
       permissions: tknPayload.value.permissions,
-      name: tknPayload.value.name
+      // name: tknPayload.value.name
     }
   })
 
-  // Handles user login and stores encrypted JWT token
-  async function loginUser(credentials: LoginCredentials) {
-    const isLoading = ref(true)
+  // Handles user registeration and stores encrypted JWT token
+  async function registerUser(credentials: Object): Promise<FetchResponse<any>> {
+    return await authService.register(credentials)
+    .then((res) => { 
+      savedEncrytedJwtAccessToken.value = 
+        encryptData(res?.token)
 
-    try {
-      const { data } = await authService.login(credentials)
-      savedEncrytedJwtAccessToken.value = encryptData(data?.token) 
-    } 
-    catch (err: any) {
-      
-      // TODO: show toast or propagate error to form
-      console.error(err?.response?.data?.error)
-      /**
-       * -> err.response?.data?.message
-       * create a toast and display message in it,
-       *  or send the error back to to the login forms state
-       */
-    } 
-    finally {
-      isLoading.value = false
-    }
+      return res 
+    })
+  }
+
+  // Handles user login and stores encrypted JWT token
+  async function loginUser(credentials: Object): Promise<FetchResponse<any>>  {
+    return await authService.login(credentials)
+    .then((res) => { 
+      savedEncrytedJwtAccessToken.value = 
+        encryptData(res?.token)
+
+      return res 
+    })
+  }
+
+  // Handles user logout and clears persisted encrypted JWT token 
+  async function logoutUser() {
+    clearStorage(ERP_STORAGE_KEYS.JWT_ACCESS_TOKEN)
+    await navigateTo('/auth/login')
   }
 
   return {
     user,
     loginUser,
+    logoutUser,
+    registerUser,
+    accessTokenHasExpired,
     savedEncrytedJwtAccessToken
   }
 })

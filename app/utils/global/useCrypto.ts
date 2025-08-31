@@ -1,14 +1,12 @@
 import CryptoJS from 'crypto-js'
 
 export function useCrypto() {
-  // https://nuxt.com/docs/4.x/guide/going-further/runtime-config
-  const config = useRuntimeConfig()
 
   function encryptData(data: any | null) {
     if(!data) return null
 
     const ciphertext = CryptoJS.AES
-      .encrypt(JSON.stringify(data), config.public.erpCryptoKey)
+      .encrypt(JSON.stringify(data), import.meta.env.VITE_ERP_CRYPTO_KEY)
       .toString()
 
     if(!ciphertext) return null
@@ -19,7 +17,7 @@ export function useCrypto() {
     if (!ciphertext) return null
 
     const bytes = CryptoJS.AES.
-      decrypt(ciphertext, config.public.erpCryptoKey)
+      decrypt(ciphertext, import.meta.env.VITE_ERP_CRYPTO_KEY)
 
     const decryptedData = bytes.toString(CryptoJS.enc.Utf8)
     

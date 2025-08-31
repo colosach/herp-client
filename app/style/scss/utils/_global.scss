@@ -1,8 +1,7 @@
-
-* {
-  transition: .2s;
-}
-
 .margin {
   padding: 1rem;
+}
+
+.capitalize-first-char::first-letter {
+  text-transform: uppercase;
 }
