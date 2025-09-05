@@ -52,7 +52,7 @@ export default function useLogin() {
           })
 
           // Redirect to home page after successful login
-          await navigateTo("/")
+          // await navigateTo("/")
         }
       })
       .catch((error) => {

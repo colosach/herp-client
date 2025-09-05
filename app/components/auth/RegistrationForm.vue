@@ -39,10 +39,10 @@
         <div class="flex flex-col gap-4">
           <UFormField 
             :label="$t('REGISTER.inputs.firstName.label')" 
-            :required="true" name="firstName"  size="xl"
+            :required="true" name="first_name"  size="xl"
           > 
             <UInput 
-              v-model="state.firstName" type="text"
+              v-model.trim="state.first_name" type="text"
               class="erp__registrationForm__firstName w-full" 
               :placeholder="$t('REGISTER.inputs.firstName.placeholder')"
               :ui="{ base: 'text-ellipsis' }"
@@ -52,10 +52,10 @@
 
           <UFormField 
             :label="$t('REGISTER.inputs.lastName.label')" 
-            :required="true" name="lastName" size="xl"
+            :required="true" name="last_name" size="xl"
           > 
             <UInput 
-              v-model="state.lastName" type="text"
+              v-model.trim="state.last_name" type="text"
               class="erp__registrationForm__lastName w-full" 
               :placeholder="$t('REGISTER.inputs.lastName.placeholder')"
               :ui="{ base: 'text-ellipsis' }"
@@ -68,7 +68,7 @@
             :required="true" name="email" size="xl"
           > 
             <UInput 
-              v-model="state.email" type="email"
+              v-model.trim="state.email" type="email"
               class="erp__registrationForm__email w-full" 
               :placeholder="$t('REGISTER.inputs.email.placeholder')"
               :ui="{ base: 'text-ellipsis' }"
@@ -79,9 +79,10 @@
           <UFormField 
             :label="$t('REGISTER.inputs.password.label')" 
             :required="true" name="password" size="xl"
+            aria-autocomplete="none"
           > 
             <UInput 
-              v-model="state.password" 
+              v-model.trim="state.password" 
               :type="pswdIsShown ? 'text' : 'password'"
               class="erp__registrationForm__password w-full" 
               :color="color"
@@ -92,6 +93,8 @@
               required
               @focus="passwordStrengthCheckerIsShown = true"
               @blur="passwordStrengthCheckerIsShown = false"
+              autocomplete="false"
+              aria-autocomplete="none"
             >
               <template #trailing>
                 <UButton
@@ -150,19 +153,22 @@
             :label="$t('REGISTER.inputs.password2.label')" class="-mt-4"
             :class="{'-mt-0': passwordStrengthCheckerIsShown }"
             :required="true" name="password2" size="xl"
+            aria-autocomplete="none"
           > 
             <UInput 
-              v-model="state.password2" 
-              :type="pswdIsShown ? 'text' : 'password'"
+              v-model.trim="state.password2" 
+              :type="pswd2IsShown ? 'text' : 'password'"
               class="erp__registrationForm__password2 w-full" 
               :placeholder="$t('REGISTER.inputs.password2.placeholder')"
               :ui="{ base: 'text-ellipsis', trailing: 'pe-1' }"
+              autocomplete="false"
+              aria-autocomplete="none"
               required
             >
               <template #trailing>
                 <UButton
                   color="neutral" variant="link" size="sm"
-                  class="cursor-pointer text-dimmed ph-bol"
+                  class="cursor-pointer text-dimmed ph-bold"
                   :icon="pswd2IsShown ? 'i-ph-eye-slash' : 'i-ph-eye'"
                   :aria-label="pswd2IsShown ? 'Hide password' : 'Show password'"
                   :aria-pressed="pswd2IsShown"
@@ -192,13 +198,14 @@
       <!-- Form footer/actions -->
       <template #footer>
         <div class="erp__registrationForm__actions flex items-center justify-between gap-1 text-base">
-
-          <RouterLink
+          <UButton
+            variant="link"
             :to="{ name: 'auth-login' }"
-            class="erp__registrationForm__loginBtn text-muted"
+            class="erp__registrationForm__loginBtn undl-text text-muted hover:text-white text-base p-0"
           >
             {{ $t('REGISTER.actions.loginInstead') }}
-          </RouterLink>
+            <span></span>
+          </UButton>
 
           <UButton
             type="submit" size="xl"

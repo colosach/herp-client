@@ -1,7 +1,7 @@
 export default defineNuxtRouteMiddleware((to) => {
   const authStore = useAuthStore()
   
-  console.log("--auth middleware running")
+  consola.log("--- auth middleware running")
 
   // Redirect unauthenticated users trying to access protected routes
   if (!authStore.user && to.meta.requiresAuth) {

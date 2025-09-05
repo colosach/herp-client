@@ -46,13 +46,14 @@
       <!-- Form footer/actions -->
       <template #footer>
         <div class="erp__forgotPswdForm__actions flex items-center justify-between gap-1 text-base">
-
-          <RouterLink
+          <UButton
+          variant="link"
             :to="{ name: 'auth-login' }"
-            class="erp__forgotPswdForm__rPsswdBtn text-muted"
+            class="erp__forgotPswdForm__rPsswdBtn undl-text text-muted hover:text-white p-0 text-base"
           >
-            {{ $t('FORGOT_PASSWORD.actions.login') }}
-          </RouterLink>
+          {{ $t('FORGOT_PASSWORD.actions.login') }}
+            <span></span>
+          </UButton>
 
           <UButton
             type="submit" size="xl"

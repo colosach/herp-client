@@ -73,13 +73,13 @@
           <p class="erp__loginForm__disclaimer text-base text-muted mt-2">
             {{ $t('LOGIN.addonText.chunk1') }} 
 
-            <NuxtLink to="" class="text-highlighted italic underline">
+            <NuxtLink to="/" class="text-highlighted italic underline">
               {{ $t('LOGIN.addonText.terms') }}  
             </NuxtLink>
 
             {{ $t('LOGIN.addonText.chunk2') }}
 
-            <NuxtLink to="" class="text-highlighted italic underline inline">
+            <NuxtLink to="/" class="text-highlighted italic underline inline">
               {{ $t('LOGIN.addonText.privacy') }} 
             </NuxtLink>.
           </p>
@@ -89,13 +89,13 @@
       <!-- Form footer/actions -->
       <template #footer>
         <div class="erp__loginForm__actions flex items-center justify-between gap-1 text-base">
-
-          <RouterLink
+          <UButton
+            variant="link"
             :to="{ name: 'auth-reset-password' }"
-            class="erp__loginForm__rPsswdBtn text-muted"
+            class="erp__loginForm__rPsswdBtn undl-text text-muted hover:text-white p-0 text-base"
           >
             {{ $t('LOGIN.actions.resetPassword') }}
-          </RouterLink>
+          </UButton>
 
           <UButton
             type="submit" size="xl"

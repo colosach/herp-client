@@ -1,8 +1,50 @@
 <script setup lang="ts">
+  import { z } from 'zod'
+
+  const { decryptData } = useCrypto()
+
   definePageMeta({
     layout: 'erp-auth-layout',
-    requiresGuest: true
+    requiresGuest: true,
+    middleware: ['otp']
   })
+
+  const decryptedEmailPendingAction = computed(() => {
+
+    // saved email in storage
+    let savedEncrytedEmailPendingAction = 
+      localStorage.getItem(ERP_STORAGE_KEYS.EMAIL_PENDING_ACTION)
+
+    if (!savedEncrytedEmailPendingAction) return null
+    return decryptData(savedEncrytedEmailPendingAction)
+    
+  })
+
+  const route = useRoute()
+  const registerationStep = computed(() => {
+    return route.query[REGISTRATION.STEP_QUERY_KEY]
+  })
+
+  const OTPFormIsInLoadingState = ref(false)
+  const { initEmailVerification } = useEmailVerification()
+
+  async function handleOTPSubmission(state: any) {
+    
+    // Put OTP form elements into loading state
+    OTPFormIsInLoadingState.value = true
+
+    await initEmailVerification(state.value.pin)
+      .then((res) =>{
+        console.log("🚧 ~ handleOTPSubmission ~ res::::", res)
+        OTPFormIsInLoadingState.value = false
+
+        // automatically login user, then send them to setup
+
+        if(res) {
+          navigateTo("/setup")
+        }
+      })  
+  }
 </script>
 
 <template>
@@ -12,6 +54,13 @@
       flex items-center justify-center
     "
   >
-    <RegistrationForm />
+    <OTPForm
+      :loading="OTPFormIsInLoadingState"
+      :emailPendingVerification="decryptedEmailPendingAction"
+      v-if="registerationStep === REGISTRATION.STEP_QUERY_VALUES.VERIFY"
+      @submit="handleOTPSubmission"
+    />
+
+    <RegistrationForm  v-else/>
   </main>
 </template>

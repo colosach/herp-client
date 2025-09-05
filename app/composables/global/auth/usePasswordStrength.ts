@@ -6,10 +6,11 @@ export default function(state: any): {
 } {
   const { t } = useI18n()
 
+
   function checkStrength(str: string | null) {
     const requirements = [
-      { regex: new RegExp(`.{${LOGINSCHEMA_CHAR_LENGTHS.password},}`), 
-        text: t('REGISTER.inputs.password.requirements.minLength', { min: LOGINSCHEMA_CHAR_LENGTHS.password }) 
+      { regex: new RegExp(`.{${LOGIN.SCHEMA_CHAR_LENGTHS.password},}`), 
+        text: t('REGISTER.inputs.password.requirements.minLength', { min: LOGIN.SCHEMA_CHAR_LENGTHS.password }) 
       },
 
       { regex: /\d/, text: t('REGISTER.inputs.password.requirements.requireNumber') },
