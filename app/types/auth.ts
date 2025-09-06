@@ -1,17 +1,25 @@
 import * as z from 'zod'
 
 export type jwtToken = string
+import type { JwtPayload } from 'jwt-decode'
 
-export type JwtAccessTokenDecoded = {
-  userId: number
+export interface JwtAccessTokenDecoded extends JwtPayload {
+  userId: number,
+  userName: string,
+  email: string
+  role: string
+  tokenType: string,
+  permissions: string[]
+  exp: number,
+  iat:number
+}
+
+export interface User  {
+  userId: number,
+  userName: string,
   email: string
   role: string
   permissions: string[]
-  exp: number
-}
-
-export interface User extends Omit<JwtAccessTokenDecoded, 'exp'> {
-  name?: string
 }
 
 export const createPasswordSchema = () => {
@@ -19,8 +27,8 @@ export const createPasswordSchema = () => {
   
   return z.object({
     password: z.string()
-      .refine(val => !val || val.length >= 8, {
-        message: t('REGISTER.inputs.password.errors.minLength', { min: LOGINSCHEMA_CHAR_LENGTHS.password })
+      .refine(val => !val || val.length >= REGISTRATION.SCHEMA_CHAR_LENGTHS.password, {
+        message: t('REGISTER.inputs.password.errors.minLength', { min: LOGIN.SCHEMA_CHAR_LENGTHS.password })
       })
       .refine(val => !val || /\d/.test(val), {
         message: t('REGISTER.inputs.password.errors.requireNumber')
@@ -44,7 +52,7 @@ export const createRegisterationSchema = () => {
   const passwordSchema = createPasswordSchema()
 
   return passwordSchema.extend({
-    firstName: z.string()
+    first_name: z.string()
       .refine(val => !val || /^[a-zA-Z]+$/.test(val), {
         message: t('REGISTER.inputs.firstName.errors.oneWord')
       })
@@ -57,12 +65,12 @@ export const createRegisterationSchema = () => {
       .refine(val => !val || !/^\d+$/.test(val), {
         message: t('REGISTER.inputs.firstName.errors.notJustNumbers')
       })
-      .refine(val => !val || val.length >= 3, {
-        message: t('REGISTER.inputs.firstName.errors.minLength', { min: REGISTRATION_SCHEMA_CHAR_LENGTHS.firstName })
+      .refine(val => !val || val.length >= REGISTRATION.SCHEMA_CHAR_LENGTHS.firstName, {
+        message: t('REGISTER.inputs.firstName.errors.minLength', { min: REGISTRATION.SCHEMA_CHAR_LENGTHS.firstName })
       })
       .nullable(),
 
-    lastName: z.string()
+    last_name: z.string()
       .refine(val => !val || /^[a-zA-Z]+$/.test(val), {
         message: t('REGISTER.inputs.lastName.errors.oneWord')
       })
@@ -75,9 +83,13 @@ export const createRegisterationSchema = () => {
       .refine(val => !val || !/^\d+$/.test(val), {
         message: t('REGISTER.inputs.lastName.errors.notJustNumbers')
       })
-      .refine(val => !val || val.length >= 3, {
-        message: t('REGISTER.inputs.lastName.errors.minLength', { min: REGISTRATION_SCHEMA_CHAR_LENGTHS.lastName })
+      .refine(val => !val || val.length >= REGISTRATION.SCHEMA_CHAR_LENGTHS.lastName, {
+        message: t('REGISTER.inputs.lastName.errors.minLength', { min: REGISTRATION.SCHEMA_CHAR_LENGTHS.lastName })
       })
+      .nullable(),
+
+    username: z.string()
+      .min(REGISTRATION.SCHEMA_CHAR_LENGTHS.username)
       .nullable(),
 
     email: z.string()
@@ -99,13 +111,13 @@ export const createLoginSchema = () => {
   return z.object({
     id: z.string()
       .refine(val => !val || val.length >= 4 || z.string().email().safeParse(val).success, {
-        message: t('LOGIN.inputs.id.errors.minLength', { min: LOGINSCHEMA_CHAR_LENGTHS.id })
+        message: t('LOGIN.inputs.id.errors.minLength', { min: LOGIN.SCHEMA_CHAR_LENGTHS.id })
       })
       .nullable(),
 
     password: z.string()
       .refine(val => !val || val.length >= 8, {
-        message: t('LOGIN.inputs.password.errors.minLength', { min: LOGINSCHEMA_CHAR_LENGTHS.password })
+        message: t('LOGIN.inputs.password.errors.minLength', { min: LOGIN.SCHEMA_CHAR_LENGTHS.password })
       })
       .nullable()
   })
@@ -128,6 +140,20 @@ export const createResetPasswordSchema = () => {
   const { t } = useI18n()
 
   return createPasswordSchema()
+    // when user types into UPinInput array of numbers is created, 
+    // when they paste, array of string is created, 
+    // this schema was written this way to cater for whichever is the case
+
+    .extend({
+      pin: z.union([
+        z.array(z.number()),
+        z.array(z.string())
+      ]).transform(val => {
+
+        // Convert any string elements to numbers
+        return val.map(item => typeof item === 'string' ? Number(item) : item)
+      })
+    })
     .refine(data => !data.password2 || data.password === data.password2, {
       message: t('REGISTER.inputs.password2.errors.noMatch'),
       path: ['password2']

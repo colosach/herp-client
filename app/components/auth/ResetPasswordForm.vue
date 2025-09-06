@@ -1,14 +1,27 @@
 <script setup lang="ts">
   import * as z from 'zod'
 
+  const props = defineProps<{
+    emailPendingVerification?: string
+  }>()
+
   const { 
-    schema, state,
+    schema, state, validateUserInput,
     color, text, strength, score
   } = useResetPassword()
+
+  const form = useTemplateRef('reset-password-form')
 
   const pswdIsShown = ref(false)
   const pswd2IsShown = ref(false)
   const passwordStrengthCheckerIsShown = ref(false)
+
+  const { getOtpSession } = useOTPSession()
+
+  const OTPSessionEmail  = computed(() => {
+    const session = getOtpSession()
+    return session?.email ?? null
+  })
 
   type Schema = z.output<typeof schema>
   const emit = defineEmits<{
@@ -22,7 +35,7 @@
     id="reset-password-form" ref="reset-password-form"
     class="erp__resetPswdForm space-y-4 w-full max-w-[30rem]"
     :validate-on="['blur']"
-    @submit="emit('submit', state)"
+    @submit="validateUserInput(form)"
   >
     <UCard 
       :ui="{
@@ -37,13 +50,34 @@
       <template #header>
         <div class="flex flex-col gap-1">
           <h1 class="erp__resetPswdForm__title text-2xl text-highlighted"> {{  $t('RESET_PASSWORD.title') }}</h1>
-          <p class="erp__resetPswdForm__subtitle text-base text-muted"> {{  $t('RESET_PASSWORD.subtitle') }} </p>
+
+          <p class="erp__otpForm__subtitle text-base text-muted"> 
+            <span> {{  $t('RESET_PASSWORD.subtitle.chunk1') }} 
+              <span class="text-highlighted"> {{ OTPSessionEmail }}.  </span> 
+            </span>  
+            
+            <span> {{  $t('RESET_PASSWORD.subtitle.chunk2') }} </span>
+          </p>
         </div>
       </template>
 
       <!-- Form body -->
       <template #default>
         <div class="flex flex-col gap-4">
+
+          <UFormField 
+            :label="$t('EMAIL_VERIFICATION.inputs.pin.label')" size="xl"
+            :required="true" name="pin"  
+          > 
+            <UPinInput
+              v-model="state.pin" 
+              :length="VERIFICATION.OTP_LENGTH"
+              type="number" placeholder="○" size="xl"
+              id="verification-pin" 
+              :ui="{ root: 'w-full justify-between' }"
+              required
+            />
+          </UFormField> 
           
           <UFormField 
             :label="$t('REGISTER.inputs.password.label')" 
@@ -148,13 +182,13 @@
       <!-- Form footer/actions -->
       <template #footer>
         <div class="erp__resetPswdForm__actions flex items-center justify-between gap-1 text-base">
-
-          <RouterLink
+          <UButton
+            variant="link"
             :to="{ name: 'auth-login' }"
-            class="erp__resetPswdForm__rPsswdBtn text-muted gap-4"
+            class="erp__resetPswdForm__rPsswdBtn undl-text text-muted hover:text-white p-0 text-base"
           >
-            {{ $t('RESET_PASSWORD.actions.login') }}
-          </RouterLink>
+          {{ $t('RESET_PASSWORD.actions.login') }}
+          </UButton>
 
           <UButton
             type="submit" size="xl"

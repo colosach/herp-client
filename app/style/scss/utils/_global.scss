@@ -5,3 +5,25 @@
 .capitalize-first-char::first-letter {
   text-transform: uppercase;
 }
+
+.undl-text {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    left: auto;
+    bottom: -0.125rem;
+    height: 0.125rem;
+    width: 0;
+    background: currentColor;
+    transition: width 0.3s cubic-bezier(0.4,0,0.2,1), left 0.3s cubic-bezier(0.4,0,0.2,1), right 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  &:hover::after {
+    width: 100%;
+    left: 0;
+    right: auto;
+  }
+}

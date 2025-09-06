@@ -4,9 +4,9 @@ import type {
 } from '@nuxt/ui'
 
 import * as z from 'zod'
+const { randomAlphanumeric } = useUtils()
 
-
-export default function useRegisteration() {
+const useRegisteration = () => {
 
   const { t } = useI18n()
   const authStore = useAuthStore()
@@ -19,11 +19,18 @@ export default function useRegisteration() {
   type Schema = z.output<typeof schema>
 
   const state = reactive<Schema>({
-    firstName: null,
-    lastName: null,
+    first_name: null,
+    last_name: null,
     email: null,
     password: null,
-    password2: null
+    password2: null,
+    username: null
+  })
+  
+  // watch firsName and generate username from it
+  watchEffect(()=> {
+    state.username = state.first_name 
+      ? `${state.first_name.toLocaleLowerCase()}-${randomAlphanumeric(4)}` : null
   })
 
   const { 
@@ -32,41 +39,54 @@ export default function useRegisteration() {
   } = usePasswordStrength(state)
 
   const toast = useToast()
+  const { createOtpSession } = useOTPSession()
+
 
   async function initRegisteration(event: FormSubmitEvent<Schema>) {
-    // await authStore.loginUser(credentials)
-    //   .then( async(res) => {
-    //     if (res) {
+    
+  // Omit password 2 before sending
+    const {password2, ...stateWithoutPassword2 } = state
 
-    //       // Show success toast notification
-    //       toast.add({ 
-    //         title: t("LOGIN.messages.success.title"),
-    //         description: t("LOGIN.messages.success.subtitle"),
-    //         type: "foreground",
-    //         color: "primary",
-    //         duration: 2000,
-    //         icon: "ph-seal-check",
-    //         close: false,
-    //         ui: { root: 'p-6' },
-    //       })
+    await authStore.registerUser(stateWithoutPassword2)
+      .then( async(res) => {
+        if (res) {
 
-    //       // Redirect to home page after successful login
-    //       await navigateTo("/")
-    //     }
-    //   })
-    //   .catch((error) => {
+          // Show success toast notification
+          toast.add({ 
+            title: t("REGISTER.messages.success.title"),
+            description: t("REGISTER.messages.success.subtitle"),
+            type: "foreground",
+            color: "primary",
+            duration: 2000,
+            icon: "ph-seal-check",
+            close: false,
+            ui: { root: 'p-6' },
+          })
 
-    //       // Show error toast notification
-    //       toast.add({ 
-    //         title: t("LOGIN.messages.error.title"),
-    //         description: error?.data?.error ?? t("LOGIN.messages.error.subtitle"),
-    //         color: "error",
-    //         duration: 4000,
-    //         closeIcon: "ph-x",
-    //         icon: "ph-seal-warning",
-    //         close: { color: 'error' }
-    //       })
-    //   })
+          // save email in storage
+          createOtpSession(state.email)
+          
+          // navigate to email verification screen
+          navigateTo({ 
+            query: { 
+              [REGISTRATION.STEP_QUERY_KEY]: REGISTRATION.STEP_QUERY_VALUES.VERIFY} 
+            })
+            
+        }
+      })
+      .catch((error) => {
+
+        // Show error toast notification
+        toast.add({ 
+          title: t("REGISTER.messages.error.title"),
+          description: error?.data?.error ?? t("REGISTER.messages.error.subtitle"),
+          color: "error",
+          duration: 4000,
+          closeIcon: "ph-x",
+          icon: "ph-seal-warning",
+          close: { color: 'error' }
+        })
+      })
      
   }
 
@@ -76,3 +96,5 @@ export default function useRegisteration() {
   }
 
 }
+
+export default useRegisteration

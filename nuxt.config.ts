@@ -116,7 +116,7 @@ export default defineNuxtConfig({
   icon: {
     mode: "css",
     provider: 'none',
-    externalizeIconsJson: true,
+    // externalizeIconsJson: true,
     clientBundle: {
       scan: {
         // note that when you specify those values, the default behavior will be overridden
@@ -157,6 +157,11 @@ export default defineNuxtConfig({
         name: "useJwt",
         as: "useJwt"
       },
+
+      {
+        from: 'consola',
+        name: 'consola'
+      }
     ]
   },
 

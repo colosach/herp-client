@@ -6,7 +6,7 @@ import type {
 import * as z from 'zod'
 
 
-export default function useForgotPassword() {
+const useForgotPassword = () => {
 
   const { t } = useI18n()
   const authStore = useAuthStore()
@@ -23,41 +23,48 @@ export default function useForgotPassword() {
   })
 
   const toast = useToast()
+  const { createOtpSession } = useOTPSession()
 
-  async function initPasswordReset(event: FormSubmitEvent<Schema>) {
-    // await authStore.loginUser(credentials)
-    //   .then( async(res) => {
-    //     if (res) {
 
-    //       // Show success toast notification
-    //       toast.add({ 
-    //         title: t("LOGIN.messages.success.title"),
-    //         description: t("LOGIN.messages.success.subtitle"),
-    //         type: "foreground",
-    //         color: "primary",
-    //         duration: 2000,
-    //         icon: "ph-seal-check",
-    //         close: false,
-    //         ui: { root: 'p-6' },
-    //       })
+  async function initPasswordReset() {
+    await authService.forgotPassword(state)
+      .then( async(res) => {
+        if (res) {
 
-    //       // Redirect to home page after successful login
-    //       await navigateTo("/")
-    //     }
-    //   })
-    //   .catch((error) => {
+          // Show success toast notification
+          toast.add({ 
+            title: t("FORGOT_PASSWORD.messages.success.title"),
+            description: t("FORGOT_PASSWORD.messages.success.subtitle"),
+            type: "foreground",
+            color: "primary",
+            duration: 4000,
+            icon: "ph-seal-check",
+            close: false,
+            ui: { root: 'p-6' },
+          })
 
-    //       // Show error toast notification
-    //       toast.add({ 
-    //         title: t("LOGIN.messages.error.title"),
-    //         description: error?.data?.error ?? t("LOGIN.messages.error.subtitle"),
-    //         color: "error",
-    //         duration: 4000,
-    //         closeIcon: "ph-x",
-    //         icon: "ph-seal-warning",
-    //         close: { color: 'error' }
-    //       })
-    //   })
+          // save email in storage
+          createOtpSession(state.email)
+
+          // navigate to email verification screen
+          navigateTo({ 
+            query: { [RESET.STEP_QUERY_KEY]: RESET.STEP_QUERY_VALUES.VERIFY } 
+          })
+        }
+      })
+      .catch((error) => {
+
+          // Show error toast notification
+          toast.add({ 
+            title: t("FORGOT_PASSWORD.messages.error.title"),
+            description: error?.data?.error ?? t("FORGOT_PASSWORD.messages.error.subtitle"),
+            color: "error",
+            duration: 4000,
+            closeIcon: "ph-x",
+            icon: "ph-seal-warning",
+            close: { color: 'error' }
+          })
+      })
      
   }
 
@@ -66,3 +73,5 @@ export default function useForgotPassword() {
   }
 
 }
+
+export default useForgotPassword
