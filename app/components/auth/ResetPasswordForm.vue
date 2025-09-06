@@ -16,16 +16,11 @@
   const pswd2IsShown = ref(false)
   const passwordStrengthCheckerIsShown = ref(false)
 
-  const { decryptData } = useCrypto()
-  const decryptedEmailPendingAction = computed(() => {
+  const { getOtpSession } = useOTPSession()
 
-    // saved email in storage
-    let savedEncrytedEmailPendingAction = 
-      localStorage.getItem(ERP_STORAGE_KEYS.EMAIL_PENDING_ACTION)
-
-    if (!savedEncrytedEmailPendingAction) return null
-    return decryptData(savedEncrytedEmailPendingAction)
-
+  const OTPSessionEmail  = computed(() => {
+    const session = getOtpSession()
+    return session?.email ?? null
   })
 
   type Schema = z.output<typeof schema>
@@ -58,7 +53,7 @@
 
           <p class="erp__otpForm__subtitle text-base text-muted"> 
             <span> {{  $t('RESET_PASSWORD.subtitle.chunk1') }} 
-              <span class="text-highlighted"> {{ decryptedEmailPendingAction }}.  </span> 
+              <span class="text-highlighted"> {{ OTPSessionEmail }}.  </span> 
             </span>  
             
             <span> {{  $t('RESET_PASSWORD.subtitle.chunk2') }} </span>
@@ -78,7 +73,7 @@
               v-model="state.pin" 
               :length="VERIFICATION.OTP_LENGTH"
               type="number" placeholder="○" size="xl"
-              id="verification-pin" name="pin"
+              id="verification-pin" 
               :ui="{ root: 'w-full justify-between' }"
               required
             />

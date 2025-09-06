@@ -140,8 +140,19 @@ export const createResetPasswordSchema = () => {
   const { t } = useI18n()
 
   return createPasswordSchema()
+    // when user types into UPinInput array of numbers is created, 
+    // when they paste, array of string is created, 
+    // this schema was written this way to cater for whichever is the case
+
     .extend({
-      pin: z.array(z.number())
+      pin: z.union([
+        z.array(z.number()),
+        z.array(z.string())
+      ]).transform(val => {
+
+        // Convert any string elements to numbers
+        return val.map(item => typeof item === 'string' ? Number(item) : item)
+      })
     })
     .refine(data => !data.password2 || data.password === data.password2, {
       message: t('REGISTER.inputs.password2.errors.noMatch'),

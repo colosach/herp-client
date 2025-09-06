@@ -6,7 +6,7 @@ import type {
 import * as z from 'zod'
 const { randomAlphanumeric } = useUtils()
 
-export default function useRegisteration() {
+const useRegisteration = () => {
 
   const { t } = useI18n()
   const authStore = useAuthStore()
@@ -39,7 +39,8 @@ export default function useRegisteration() {
   } = usePasswordStrength(state)
 
   const toast = useToast()
-  const { encryptData } = useCrypto()
+  const { createOtpSession } = useOTPSession()
+
 
   async function initRegisteration(event: FormSubmitEvent<Schema>) {
     
@@ -63,13 +64,9 @@ export default function useRegisteration() {
           })
 
           // save email in storage
-          updateStorage({
-            key: ERP_STORAGE_KEYS.EMAIL_PENDING_ACTION,
-            target: state.email,
-            encrypt: true
-          })
+          createOtpSession(state.email)
           
-          // navigate to email verification 
+          // navigate to email verification screen
           navigateTo({ 
             query: { 
               [REGISTRATION.STEP_QUERY_KEY]: REGISTRATION.STEP_QUERY_VALUES.VERIFY} 
@@ -99,3 +96,5 @@ export default function useRegisteration() {
   }
 
 }
+
+export default useRegisteration

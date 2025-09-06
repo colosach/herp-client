@@ -9,17 +9,6 @@
     middleware: ['otp']
   })
 
-  const decryptedEmailPendingAction = computed(() => {
-
-    // saved email in storage
-    let savedEncrytedEmailPendingAction = 
-      localStorage.getItem(ERP_STORAGE_KEYS.EMAIL_PENDING_ACTION)
-
-    if (!savedEncrytedEmailPendingAction) return null
-    return decryptData(savedEncrytedEmailPendingAction)
-    
-  })
-
   const route = useRoute()
   const registerationStep = computed(() => {
     return route.query[REGISTRATION.STEP_QUERY_KEY]
@@ -35,7 +24,6 @@
 
     await initEmailVerification(state.value.pin)
       .then((res) =>{
-        console.log("🚧 ~ handleOTPSubmission ~ res::::", res)
         OTPFormIsInLoadingState.value = false
 
         // automatically login user, then send them to setup
@@ -56,7 +44,6 @@
   >
     <OTPForm
       :loading="OTPFormIsInLoadingState"
-      :emailPendingVerification="decryptedEmailPendingAction"
       v-if="registerationStep === REGISTRATION.STEP_QUERY_VALUES.VERIFY"
       @submit="handleOTPSubmission"
     />

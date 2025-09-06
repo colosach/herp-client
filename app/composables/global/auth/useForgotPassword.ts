@@ -6,7 +6,7 @@ import type {
 import * as z from 'zod'
 
 
-export default function useForgotPassword() {
+const useForgotPassword = () => {
 
   const { t } = useI18n()
   const authStore = useAuthStore()
@@ -23,6 +23,8 @@ export default function useForgotPassword() {
   })
 
   const toast = useToast()
+  const { createOtpSession } = useOTPSession()
+
 
   async function initPasswordReset() {
     await authService.forgotPassword(state)
@@ -42,15 +44,11 @@ export default function useForgotPassword() {
           })
 
           // save email in storage
-          updateStorage({
-            key: ERP_STORAGE_KEYS.EMAIL_PENDING_ACTION,
-            target: state.email,
-            encrypt: true
-          })
+          createOtpSession(state.email)
 
-          // navigate to email verification 
+          // navigate to email verification screen
           navigateTo({ 
-            query: { [RESET.STEP_QUERY_KEY]: RESET.STEP_QUERY_VALUES.RESET } 
+            query: { [RESET.STEP_QUERY_KEY]: RESET.STEP_QUERY_VALUES.VERIFY } 
           })
         }
       })
@@ -75,3 +73,5 @@ export default function useForgotPassword() {
   }
 
 }
+
+export default useForgotPassword

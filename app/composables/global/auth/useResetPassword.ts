@@ -26,13 +26,16 @@ export function useResetPassword() {
     color, text, 
     strength, score 
   } = usePasswordStrength(state)
+  const { getOtpSession, clearOtpSession } = useOTPSession()
+
 
   async function validateUserInput(form: any) {
-
+    console.log('validateUserInput')
     // Clear previous errors first
     formErrors.length = 0 
 
     
+    console.log('Validating pin:', state.pin);
     if (!state.pin || state.pin.filter(digit => digit !== null && digit !== undefined).length < VERIFICATION.OTP_LENGTH) {
       formErrors.push({ name: 'pin', message: t('EMAIL_VERIFICATION.inputs.pin.errors.minLength', { min: VERIFICATION.OTP_LENGTH })})
       form.setErrors(formErrors)
@@ -44,13 +47,10 @@ export function useResetPassword() {
   }
 
   async function resetPassword() {
-    // saved email in storage
-    let savedEncrytedEmailPendingAction = 
-      localStorage.getItem(ERP_STORAGE_KEYS.EMAIL_PENDING_ACTION)
 
     let payload = {
       code: state.pin.join(''),
-      email: decryptData(savedEncrytedEmailPendingAction),
+      email: getOtpSession()?.email,
       new_password: state.password
     }
 
@@ -71,7 +71,7 @@ export function useResetPassword() {
         })
 
         // clear email in storage
-        clearStorage(ERP_STORAGE_KEYS.EMAIL_PENDING_ACTION)
+        clearOtpSession()
 
         // navigate to email verification 
         await navigateTo('/login')

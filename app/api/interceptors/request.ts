@@ -5,7 +5,6 @@ export function applyRequestInterceptors <T>(
   options: ResolvedFetchOptions, 
   jwtAccessToken: CookieRef<T>
 ): void {
-  console.log(jwtAccessToken)
   if (jwtAccessToken) {
     options.headers.set('Authorization', `Bearer ${jwtAccessToken}`)
   }

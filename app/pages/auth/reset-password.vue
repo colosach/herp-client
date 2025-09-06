@@ -19,7 +19,7 @@
     "
   >
     <ResetPasswordForm
-      v-if="restStep === RESET.STEP_QUERY_VALUES.RESET"
+      v-if="restStep === RESET.STEP_QUERY_VALUES.VERIFY"
     />
 
     <ForgotPasswordForm v-else/>

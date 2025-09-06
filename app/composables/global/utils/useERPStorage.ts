@@ -4,7 +4,7 @@ export enum ERP_STORAGE_KEYS {
   SESSION = 'erp-ssk',
   APP_CONFIG = 'erp-cg',
   LOCALE = 'erp-locale',
-  EMAIL_PENDING_ACTION = 'erp-epa'
+  OTP_SESSION = 'erp-os'
 }
 
 export interface StorageUpdatePayload {

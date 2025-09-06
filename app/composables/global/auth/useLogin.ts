@@ -6,8 +6,7 @@ import type {
 import * as z from 'zod'
 
 
-export default function useLogin() {
-
+const useLogin = () => {
   const { t } = useI18n()
   const authStore = useAuthStore()
 
@@ -76,3 +75,5 @@ export default function useLogin() {
   }
 
 }
+
+export default useLogin

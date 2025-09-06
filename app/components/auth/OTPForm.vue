@@ -2,7 +2,6 @@
   import * as z from 'zod'
 
   const props = defineProps<{
-    emailPendingVerification: String | null | 'admin@palmwineexpress.com'
     loading: boolean | undefined
   }>()
 
@@ -10,6 +9,11 @@
   const form = useTemplateRef('otp-form')
 
   const { formErrors, schema } = useEmailVerification()
+  const { getOtpSession } = useOTPSession()
+
+  const emailPendingVerification = computed(() => {
+    return getOtpSession()?.email
+  })
 
   type Schema = z.output<typeof schema>
   const state = useState('asd',() => shallowReactive<Schema>({
@@ -77,7 +81,7 @@
         <div class="flex flex-col gap-1">
           <h1 class="erp__otpForm__title text-2xl text-highlighted"> {{  $t('EMAIL_VERIFICATION.title') }}</h1>
           <p class="erp__otpForm__subtitle text-base text-muted"> 
-            <span> {{  $t('EMAIL_VERIFICATION.subtitle.chunk1') }} <span class="text-highlighted"> {{ props?.emailPendingVerification }}.  </span> </span>  
+            <span> {{  $t('EMAIL_VERIFICATION.subtitle.chunk1') }} <span class="text-highlighted"> {{ emailPendingVerification }}.  </span> </span>  
             <span> {{  $t('EMAIL_VERIFICATION.subtitle.chunk2') }} </span>
           </p>
         </div>

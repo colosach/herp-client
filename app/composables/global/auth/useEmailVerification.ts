@@ -16,27 +16,20 @@ export default function useEmailVerification() {
 
   const toast = useToast()
   const authStore = useAuthStore()
-  const { $i18n } = useNuxtApp()
-  const { decryptData } = useCrypto()
 
-  type OTPSchema = z.output<typeof schema>
-  
+  const { $i18n } = useNuxtApp()
+  const { getOtpSession, clearOtpSession } = useOTPSession()
   
   async function initEmailVerification(pin: number[]) {
     
-    // saved email in storage
-    let savedEncrytedEmailPendingAction = 
-      localStorage.getItem(ERP_STORAGE_KEYS.EMAIL_PENDING_ACTION)
-
     let credentials = {
       code: pin.join(''),
-      email: decryptData(savedEncrytedEmailPendingAction)
+      email: getOtpSession()?.email
     }
 
     return await authStore.verifyEmail(credentials)
       .then( async(res) => {
         if (res) {
-        console.log("🚧 ~ initEmailVerification ~ res::::", res)
 
           // Show success toast notification
           toast.add({ 
@@ -51,7 +44,8 @@ export default function useEmailVerification() {
           })
 
           // clear email in storage
-          clearStorage(ERP_STORAGE_KEYS.EMAIL_PENDING_ACTION)
+          clearOtpSession()
+
           return res
         }
       })
